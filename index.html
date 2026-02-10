@@ -1,1 +1,133 @@
-1
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Google Style Clicker</title>
+    <style>
+      :root {
+        --google-blue: #1a73e8;
+        --google-blue-dark: #1557b0;
+        --surface: #f8f9fa;
+        --text: #202124;
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      body {
+        margin: 0;
+        min-height: 100vh;
+        display: grid;
+        place-items: center;
+        background: linear-gradient(180deg, #ffffff 0%, #eef3fd 100%);
+        color: var(--text);
+        font-family: "Google Sans", Roboto, Arial, sans-serif;
+      }
+
+      .card {
+        width: min(90vw, 360px);
+        background: #fff;
+        border-radius: 16px;
+        box-shadow: 0 8px 30px rgba(26, 115, 232, 0.14);
+        padding: 28px 22px;
+        text-align: center;
+      }
+
+      h1 {
+        margin: 0;
+        font-size: 1.2rem;
+        font-weight: 500;
+      }
+
+      .count {
+        margin: 18px 0 24px;
+        font-size: clamp(2rem, 8vw, 3rem);
+        font-weight: 500;
+        color: var(--google-blue);
+        letter-spacing: 0.02em;
+      }
+
+      .google-btn {
+        position: relative;
+        isolation: isolate;
+        overflow: hidden;
+        border: 0;
+        border-radius: 999px;
+        padding: 12px 26px;
+        font: inherit;
+        font-size: 0.95rem;
+        font-weight: 500;
+        color: #fff;
+        background: var(--google-blue);
+        cursor: pointer;
+        transition: transform 120ms ease, box-shadow 120ms ease, background-color 120ms ease;
+        box-shadow: 0 2px 6px rgba(26, 115, 232, 0.35);
+      }
+
+      .google-btn:hover {
+        background: var(--google-blue-dark);
+        box-shadow: 0 4px 10px rgba(21, 87, 176, 0.4);
+      }
+
+      .google-btn:active {
+        transform: scale(0.98);
+      }
+
+      .google-btn:focus-visible {
+        outline: 3px solid rgba(26, 115, 232, 0.35);
+        outline-offset: 3px;
+      }
+
+      .ripple {
+        position: absolute;
+        border-radius: 50%;
+        transform: scale(0);
+        animation: ripple 620ms ease-out;
+        background: rgba(255, 255, 255, 0.52);
+        pointer-events: none;
+        z-index: -1;
+      }
+
+      @keyframes ripple {
+        to {
+          transform: scale(4);
+          opacity: 0;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <main class="card">
+      <h1>Simple Button Clicker</h1>
+      <p class="count" id="count" aria-live="polite">0</p>
+      <button class="google-btn" id="clicker" type="button">Click me</button>
+    </main>
+
+    <script>
+      const countEl = document.getElementById("count");
+      const button = document.getElementById("clicker");
+
+      let count = 0;
+
+      button.addEventListener("click", (event) => {
+        count += 1;
+        countEl.textContent = count;
+
+        const rect = button.getBoundingClientRect();
+        const diameter = Math.max(rect.width, rect.height);
+        const ripple = document.createElement("span");
+        ripple.className = "ripple";
+        ripple.style.width = ripple.style.height = `${diameter}px`;
+        ripple.style.left = `${event.clientX - rect.left - diameter / 2}px`;
+        ripple.style.top = `${event.clientY - rect.top - diameter / 2}px`;
+
+        button.querySelectorAll(".ripple").forEach((el) => el.remove());
+        button.appendChild(ripple);
+
+        ripple.addEventListener("animationend", () => ripple.remove(), { once: true });
+      });
+    </script>
+  </body>
+</html>
